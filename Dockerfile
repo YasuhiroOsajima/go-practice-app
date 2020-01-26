@@ -1,5 +1,4 @@
 FROM golang:1.13.6-alpine3.10 AS build
-
 WORKDIR /
 COPY . /go/src/github.com/YasuhiroOsajima/go-practice-app
 RUN apk update \
