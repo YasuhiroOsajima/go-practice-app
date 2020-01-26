@@ -15,6 +15,7 @@ import (
 func InitializeEvent() *controllers.UserController {
 	wire.Build(
 		controllers.NewUserController,
-		sqlhandler.NewSqlHandler)
+		sqlhandler.NewSqlHandler,
+	)
 	return nil
 }
