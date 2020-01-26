@@ -2,21 +2,38 @@ package sqlhandler
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 
 	"go-practice-app/pkg/interfaces/database"
 )
 
+func getParamString(param string, defaultValue string) string {
+	env := os.Getenv(param)
+	if env != "" {
+		return env
+	}
+	return defaultValue
+}
+
 type SqlHandler struct {
 	Conn *sql.DB
 }
 
 func NewSqlHandler() database.SqlHandler {
-	conn, err := sql.Open("mysql", "root:@tcp(db:3306)/sample")
+	user := getParamString("MYSQL_USER", "root")
+	host := getParamString("MYSQL_DB_HOST", "db")
+	port := getParamString("MYSQL_PORT", "3306")
+	dbname := getParamString("MYSQL_DB", "sample")
+	dataSourceName := fmt.Sprintf("%s:@tcp(%s:%s)/%s", user, host, port, dbname)
+
+	conn, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
 		panic(err.Error)
 	}
+
 	sqlHandler := new(SqlHandler)
 	sqlHandler.Conn = conn
 	return sqlHandler
@@ -28,6 +45,7 @@ func (handler *SqlHandler) Execute(statement string, args ...interface{}) (datab
 	if err != nil {
 		return res, err
 	}
+
 	res.Result = result
 	return res, nil
 }
@@ -37,6 +55,7 @@ func (handler *SqlHandler) Query(statement string, args ...interface{}) (databas
 	if err != nil {
 		return new(SqlRow), err
 	}
+
 	row := new(SqlRow)
 	row.Rows = rows
 	return row, nil

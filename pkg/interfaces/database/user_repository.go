@@ -13,10 +13,12 @@ func (repo *UserRepository) Store(u domain.User) (id int, err error) {
 	if err != nil {
 		return
 	}
+
 	id64, err := result.LastInsertId()
 	if err != nil {
 		return
 	}
+
 	id = int(id64)
 	return
 }
@@ -27,6 +29,7 @@ func (repo *UserRepository) FindById(identifier int) (user domain.User, err erro
 	if err != nil {
 		return
 	}
+
 	var id int
 	var firstName string
 	var lastName string
@@ -34,6 +37,7 @@ func (repo *UserRepository) FindById(identifier int) (user domain.User, err erro
 	if err = row.Scan(&id, &firstName, &lastName); err != nil {
 		return
 	}
+
 	user.ID = id
 	user.FirstName = firstName
 	user.LastName = lastName
@@ -47,6 +51,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 	if err != nil {
 		return
 	}
+
 	for rows.Next() {
 		var id int
 		var firstName string
@@ -54,6 +59,7 @@ func (repo *UserRepository) FindAll() (users domain.Users, err error) {
 		if err := rows.Scan(&id, &firstName, &lastName); err != nil {
 			continue
 		}
+
 		user := domain.User{
 			ID:        id,
 			FirstName: firstName,
